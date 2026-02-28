@@ -7,7 +7,8 @@ export default async function proxy(
   req: VercelRequest,
   res: VercelResponse
 ): Promise<void> {
-  const pathSegments = (req.query.path as string[]) || [];
+  const raw = req.query.path;
+  const pathSegments = Array.isArray(raw) ? raw : raw ? [raw] : [];
   const path = pathSegments.join("/");
   const queryParams = new URLSearchParams();
   for (const [k, v] of Object.entries(req.query)) {
