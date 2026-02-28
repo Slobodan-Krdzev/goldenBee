@@ -90,6 +90,12 @@ Output is in `frontend/dist/`. Set `VITE_API_URL` in `frontend/.env` to your API
 
 ---
 
+## Deployment (Contabo VPS + Vercel)
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for step-by-step instructions to deploy the backend on Contabo and the frontend on Vercel.
+
+---
+
 ## Routes
 
 | Path   | Description                    |
