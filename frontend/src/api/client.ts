@@ -1,25 +1,36 @@
 const LOCALHOST = /^(localhost|127\.0\.0\.1)$/;
 
-/** Backend API base URL when hosted. Override with VITE_API_URL in Vercel if needed. */
-const HOSTED_BACKEND = "http://75.119.159.245:3001";
+/**
+ * API base URL.
+ * - VITE_API_URL set → use it (e.g. HTTPS backend).
+ * - Local (localhost) → host:3001.
+ * - Page over HTTPS (e.g. Vercel) → same-origin "" so /api/* hits the server proxy (avoids mixed content; proxy calls backend over HTTP).
+ * - Page over HTTP, not localhost → direct backend (edge case).
+ */
+const FALLBACK_BACKEND = "http://75.119.159.245:3001";
 
-/** API base URL. Local dev = host:3001; hosted = HOSTED_BACKEND (or VITE_API_URL). */
 function getBase(): string {
   const env = import.meta.env.VITE_API_URL;
   if (typeof env === "string" && env.trim()) return env.trim().replace(/\/$/, "");
   if (typeof window !== "undefined") {
-    const { hostname } = window.location;
+    const { hostname, protocol } = window.location;
     if (LOCALHOST.test(hostname)) {
-      return `${window.location.protocol}//${hostname}:3001`;
+      return `${protocol}//${hostname}:3001`;
     }
-    return HOSTED_BACKEND;
+    if (protocol === "https:") {
+      return "";
+    }
+    return FALLBACK_BACKEND;
   }
-  return HOSTED_BACKEND;
+  return FALLBACK_BACKEND;
 }
 
-/** True when we can reach the API (explicit URL, local host:3001, or hosted backend). */
+/** True when we can reach the API. */
 export function isApiConfigured(): boolean {
-  return true;
+  const base = getBase();
+  if (base.length > 0) return true;
+  if (typeof window !== "undefined" && window.location.protocol === "https:") return true;
+  return false;
 }
 
 function getToken(): string | null {
