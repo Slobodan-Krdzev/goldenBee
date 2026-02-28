@@ -45,6 +45,7 @@ export function AdminPage() {
     id: string;
     name: string;
   } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!adminAuth) return;
@@ -164,8 +165,6 @@ export function AdminPage() {
     setShowAddProduct(false);
     setProductForm({ name: "", description: "", price: 0, categoryId: categories[0]?.id ?? "" });
   }
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function exportToJson() {
     const data = { categories, products, renderPrice };
