@@ -1,19 +1,24 @@
-/** API base URL. Empty = same-origin (Vercel proxy). In dev, uses same host as the page (so phone/tablet can use your machine's IP). */
+const LOCALHOST = /^(localhost|127\.0\.0\.1)$/;
+
+/** API base URL. Empty = same-origin (Vercel proxy). Local dev uses host:3001. */
 function getBase(): string {
   const env = import.meta.env.VITE_API_URL;
-  if (typeof env === "string") return env.replace(/\/$/, "");
+  if (typeof env === "string" && env.trim()) return env.trim().replace(/\/$/, "");
   if (typeof window !== "undefined") {
-    if (window.location.hostname.endsWith(".vercel.app")) return "";
-    return `${window.location.protocol}//${window.location.hostname}:3001`;
+    const { hostname } = window.location;
+    if (LOCALHOST.test(hostname)) {
+      return `${window.location.protocol}//${hostname}:3001`;
+    }
+    return "";
   }
   return "";
 }
 
-/** True when we can reach the API (explicit URL, same host:3001, or same-origin proxy on Vercel). */
+/** True when we can reach the API (explicit URL, local host:3001, or same-origin proxy when hosted). */
 export function isApiConfigured(): boolean {
   const base = getBase();
   if (base.length > 0) return true;
-  if (typeof window !== "undefined" && window.location.hostname.endsWith(".vercel.app")) return true;
+  if (typeof window !== "undefined" && !LOCALHOST.test(window.location.hostname)) return true;
   return false;
 }
 
