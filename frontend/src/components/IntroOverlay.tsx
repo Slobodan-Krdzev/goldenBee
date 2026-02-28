@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const LOGO_DURATION_MS = 2500;
 
 export function IntroOverlay() {
+  const location = useLocation();
   const [phase, setPhase] = useState<"logo" | "modal" | "done">("logo");
 
   useEffect(() => {
@@ -10,6 +12,7 @@ export function IntroOverlay() {
     return () => clearTimeout(t);
   }, []);
 
+  if (location.pathname === "/edit") return null;
   if (phase === "done") return null;
 
   if (phase === "logo") {
