@@ -134,3 +134,27 @@ cd backend
 npm install --production
 pm2 restart goldenbee-api
 ```
+
+---
+
+## 6. Login not working (“Погрешно корисничко име или лозинка”)
+
+1. **Restart the backend** after changing `.env`:
+   ```bash
+   cd backend
+   pm2 restart goldenbee-api
+   ```
+
+2. **Check `.env` format** — no spaces around `=`, no quotes unless needed:
+   ```
+   ADMIN_USERNAME=admin
+   ADMIN_PASSWORD=0911995482006
+   ```
+
+3. **Test login directly** (from your machine or VPS):
+   ```bash
+   curl -X POST http://YOUR_VPS_IP:3001/api/login \
+     -H "Content-Type: application/json" \
+     -d '{"username":"admin","password":"0911995482006"}'
+   ```
+   If this returns `{"token":"..."}`, the backend is correct and the issue is elsewhere (e.g. proxy, frontend).
