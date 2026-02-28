@@ -1,6 +1,9 @@
 const LOCALHOST = /^(localhost|127\.0\.0\.1)$/;
 
-/** API base URL. Empty = same-origin (Vercel proxy). Local dev uses host:3001. */
+/** Backend API base URL when hosted. Override with VITE_API_URL in Vercel if needed. */
+const HOSTED_BACKEND = "http://75.119.159.245:3001";
+
+/** API base URL. Local dev = host:3001; hosted = HOSTED_BACKEND (or VITE_API_URL). */
 function getBase(): string {
   const env = import.meta.env.VITE_API_URL;
   if (typeof env === "string" && env.trim()) return env.trim().replace(/\/$/, "");
@@ -9,17 +12,14 @@ function getBase(): string {
     if (LOCALHOST.test(hostname)) {
       return `${window.location.protocol}//${hostname}:3001`;
     }
-    return "";
+    return HOSTED_BACKEND;
   }
-  return "";
+  return HOSTED_BACKEND;
 }
 
-/** True when we can reach the API (explicit URL, local host:3001, or same-origin proxy when hosted). */
+/** True when we can reach the API (explicit URL, local host:3001, or hosted backend). */
 export function isApiConfigured(): boolean {
-  const base = getBase();
-  if (base.length > 0) return true;
-  if (typeof window !== "undefined" && !LOCALHOST.test(window.location.hostname)) return true;
-  return false;
+  return true;
 }
 
 function getToken(): string | null {
