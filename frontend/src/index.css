@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  /* Golden Bee menu palette — cardboard / parchment */
+  --color-bg: #faf6f0;
+  --color-cardboard: #f5f0e8;
+  --color-cardboard-dark: #e8dfd0;
+  --color-ink: #5e4e42;
+  --color-ink-muted: #6b5a4b;
+  --color-accent: #8b7355;
+  --color-shadow: rgba(94, 78, 66, 0.1);
+
+  /* Typography — match physical menu */
+  --font-script: "Great Vibes", cursive;
+  --font-sans: "Source Sans 3", system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+@keyframes intro-logo-fade {
+  0%, 60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@keyframes intro-logo-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
