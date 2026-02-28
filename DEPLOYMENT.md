@@ -82,17 +82,23 @@ curl http://YOUR_VPS_IP:3001/api/menu
 ### Steps
 
 **1. In Vercel project settings → Environment Variables**, add:
-```
-VITE_API_URL=http://YOUR_VPS_IP:3001
-```
-Replace `YOUR_VPS_IP` with your Contabo VPS public IP.
+
+| Variable | Value | Description |
+|----------|-------|-------------|
+| `VITE_API_URL` | *(leave empty or unset)* | Use same-origin proxy (recommended for HTTPS) |
+| `BACKEND_URL` | `http://YOUR_VPS_IP:3001` | Backend URL for the Vercel proxy (used by `vercel.ts`) |
+
+Replace `YOUR_VPS_IP` with your Contabo VPS public IP (e.g. `http://75.119.159.245:3001`).
 
 **2. Deploy**
 - Push to your main branch, or trigger a deploy from the Vercel dashboard
-- Vercel will build with `VITE_API_URL` and the frontend will call your backend
+- Vercel will proxy `/api/*` to your backend via `vercel.ts` rewrites
+- The frontend uses same-origin `/api/...` calls, avoiding mixed content (HTTPS → HTTP) errors
 
-**3. If you use a domain later**
-- Update `VITE_API_URL` to `https://api.yourdomain.com` (or your API URL)
+**3. Alternative: direct backend URL**
+- If you prefer the frontend to call the backend directly (e.g. backend has HTTPS), set:
+  - `VITE_API_URL=https://api.yourdomain.com` (or your API URL)
+  - `BACKEND_URL` is not used in that case
 - Redeploy
 
 ---
@@ -102,6 +108,7 @@ Replace `YOUR_VPS_IP` with your Contabo VPS public IP.
 | Item | Value |
 |------|-------|
 | Backend URL | `http://YOUR_VPS_IP:3001` |
+| Vercel proxy | `/api/*` → backend (via `vercel.ts`, configurable with `BACKEND_URL`) |
 | API endpoints | `GET /api/menu`, `POST /api/login`, `PUT /api/menu` |
 | Admin | `/edit` — username/password from `backend/.env` |
 

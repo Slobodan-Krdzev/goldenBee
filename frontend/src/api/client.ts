@@ -1,8 +1,9 @@
-/** API base URL. In dev, uses same host as the page (so phone/tablet can use your machine's IP). */
+/** API base URL. Empty = same-origin (Vercel proxy). In dev, uses same host as the page (so phone/tablet can use your machine's IP). */
 function getBase(): string {
   const env = import.meta.env.VITE_API_URL;
-  if (env) return env.replace(/\/$/, "");
+  if (typeof env === "string") return env.replace(/\/$/, "");
   if (typeof window !== "undefined") {
+    if (window.location.hostname.endsWith(".vercel.app")) return "";
     return `${window.location.protocol}//${window.location.hostname}:3001`;
   }
   return "";

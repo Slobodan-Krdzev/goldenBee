@@ -43,7 +43,7 @@ export function MenuPage() {
     <main className="max-w-2xl md:max-w-5xl mx-auto px-4 py-6 pb-12">
       {!hasContent ? (
         <div className="text-center py-12 text-[var(--color-ink-muted)]">
-          <p className="text-lg">Нема ставки во мени!</p>
+          <p className="text-lg">Нема ставки во мени.</p>
           <p className="text-sm mt-1">Проверете наскоро!</p>
         </div>
       ) : (
