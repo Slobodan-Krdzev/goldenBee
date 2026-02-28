@@ -139,22 +139,22 @@ pm2 restart goldenbee-api
 
 ## 6. Login not working (“Погрешно корисничко име или лозинка”)
 
-1. **Restart the backend** after changing `.env`:
+1. **Full reload** — `pm2 restart` does NOT re-read `.env`. Use:
    ```bash
-   cd backend
-   pm2 restart goldenbee-api
+   cd /var/www/goldenbee/goldenBee/backend
+   pm2 delete goldenbee-api
+   pm2 start ecosystem.config.cjs
+   pm2 save
    ```
 
-2. **Check `.env` format** — no spaces around `=`, no quotes unless needed:
-   ```
-   ADMIN_USERNAME=admin
-   ADMIN_PASSWORD=0911995482006
-   ```
+2. **Verify credentials in logs**: `pm2 logs goldenbee-api --lines 20` — you should see `Admin user=admin, password=***`. If `(not set)`, `.env` is not loading.
 
-3. **Test login directly** (from your machine or VPS):
+3. **Check `.env`** — no spaces around `=`, no quotes. Use the exact password from your `.env`.
+
+4. **Test login from VPS** (use the password from your `.env`):
    ```bash
-   curl -X POST http://YOUR_VPS_IP:3001/api/login \
+   curl -X POST http://127.0.0.1:3001/api/login \
      -H "Content-Type: application/json" \
-     -d '{"username":"admin","password":"0911995482006"}'
+     -d '{"username":"admin","password":"YOUR_PASSWORD_FROM_ENV"}'
    ```
-   If this returns `{"token":"..."}`, the backend is correct and the issue is elsewhere (e.g. proxy, frontend).
+   If curl returns `{"token":"..."}`, the backend is correct. If it fails, the password in `.env` does not match.

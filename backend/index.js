@@ -14,6 +14,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "goldenbee-secret-change-in-product
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "goldenbee";
 
+console.log("[goldenbee] Admin user=%s, password=%s", ADMIN_USERNAME, ADMIN_PASSWORD ? "***" : "(not set)");
+
 const menuSchema = new mongoose.Schema({
   categories: { type: mongoose.Schema.Types.Mixed, default: [] },
   products: { type: mongoose.Schema.Types.Mixed, default: [] },

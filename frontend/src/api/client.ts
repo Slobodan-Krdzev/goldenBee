@@ -9,9 +9,12 @@ function getBase(): string {
   return "";
 }
 
-/** True when we have an API base URL (env or same host:3001 in browser). Used so renderPrice etc. are global from the server. */
+/** True when we can reach the API (explicit URL, same host:3001, or same-origin proxy on Vercel). */
 export function isApiConfigured(): boolean {
-  return getBase().length > 0;
+  const base = getBase();
+  if (base.length > 0) return true;
+  if (typeof window !== "undefined" && window.location.hostname.endsWith(".vercel.app")) return true;
+  return false;
 }
 
 function getToken(): string | null {

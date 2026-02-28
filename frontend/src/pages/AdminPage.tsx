@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMenu } from "../context/MenuContext";
 import { ToggleSwitch } from "../components/ToggleSwitch";
@@ -46,13 +46,7 @@ export function AdminPage() {
     name: string;
   } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!adminAuth) return;
-    if (categories.length > 0 && !productForm.categoryId) {
-      setProductForm((p) => ({ ...p, categoryId: categories[0].id }));
-    }
-  }, [adminAuth, categories, productForm.categoryId]);
+  const effectiveCategoryId = productForm.categoryId || categories[0]?.id || "";
 
   if (!adminAuth) {
     return (
@@ -126,12 +120,12 @@ export function AdminPage() {
 
   function handleAddProduct(e: React.FormEvent) {
     e.preventDefault();
-    if (!productForm.name.trim() || !productForm.categoryId) return;
+    if (!productForm.name.trim() || !effectiveCategoryId) return;
     addProduct({
       name: productForm.name.trim(),
       description: productForm.description.trim(),
       price: Number(productForm.price) || 0,
-      categoryId: productForm.categoryId,
+      categoryId: effectiveCategoryId,
     });
     setProductForm({ name: "", description: "", price: 0, categoryId: categories[0]?.id ?? "" });
     setShowAddProduct(false);
@@ -153,7 +147,7 @@ export function AdminPage() {
       name: productForm.name.trim(),
       description: productForm.description.trim(),
       price: Number(productForm.price) || 0,
-      categoryId: productForm.categoryId,
+      categoryId: effectiveCategoryId,
     });
     setEditingProductId(null);
     setProductForm({ name: "", description: "", price: 0, categoryId: categories[0]?.id ?? "" });
@@ -369,7 +363,7 @@ export function AdminPage() {
               className="w-full px-3 py-2 rounded-lg border border-[var(--color-cardboard-dark)] bg-[var(--color-bg)]"
             />
             <select
-              value={productForm.categoryId}
+              value={effectiveCategoryId}
               onChange={(e) => setProductForm((p) => ({ ...p, categoryId: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg border border-[var(--color-cardboard-dark)] bg-[var(--color-bg)]"
             >
