@@ -9,6 +9,6 @@ const backendBase =
 export const config: VercelConfig = {
   rewrites: [
     routes.rewrite("/api/(.*)", `${backendBase}/api/$1`),
-    routes.rewrite("/(.*)", "/index.html"),
+    routes.rewrite("/((?!api/|assets/).*)", "/index.html"),
   ],
 };
