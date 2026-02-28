@@ -1,7 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-const BACKEND =
-  process.env.BACKEND_URL || "http://75.119.159.245:3001";
+const BACKEND = (process.env.BACKEND_URL || "http://75.119.159.245:3001").replace(/\/$/, "");
 
 export default async function proxy(
   req: VercelRequest,
@@ -35,7 +34,12 @@ export default async function proxy(
       typeof req.body === "string" ? req.body : JSON.stringify(req.body);
   }
 
-  const response = await fetch(url, init);
-  const data = await response.json().catch(() => ({}));
-  res.status(response.status).json(data);
+  try {
+    const response = await fetch(url, init);
+    const data = await response.json().catch(() => ({}));
+    res.status(response.status).json(data);
+  } catch (err) {
+    console.error("[goldenbee proxy] fetch failed:", url, err);
+    res.status(502).json({ error: "Backend unreachable" });
+  }
 }
