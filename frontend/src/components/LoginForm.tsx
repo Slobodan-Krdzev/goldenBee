@@ -16,7 +16,7 @@ export function LoginForm({ onLogin, errorMessage }: LoginFormProps) {
     setError("");
     setLoading(true);
     try {
-      const ok = await Promise.resolve(onLogin(username.trim(), password));
+      const ok = await Promise.resolve(onLogin(username.trim(), password.trim()));
       if (!ok) {
         setError("Погрешно корисничко име или лозинка.");
       }
